@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="barbersTitle">Our Barbers - The Artisan's Chair</title>
+    <meta name="description" content="Meet our master barbers. Each craftsman brings unique expertise and years of experience in traditional and contemporary men's grooming techniques.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <!-- Language Translations -->
+    <script src="translations.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'charcoal': '#1a1a1a',
+                        'warm-white': '#fafafa',
+                        'antique-gold': '#d4af37',
+                        'steel-gray': '#4a4a4a',
+                        'warm-beige': '#f5f1eb',
+                        'deep-bronze': '#8b6914'
+                    },
+                    fontFamily: {
+                        'display': ['Inter', 'serif'],
+                        'body': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .text-gradient {
+            background: linear-gradient(135deg, #d4af37, #8b6914);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37, #8b6914);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(26, 26, 26, 0.9);
+        }
+        
+        .barber-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .barber-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+            border-color: #d4af37;
+        }
+        
+        .star-rating {
+            color: #d4af37;
+        }
+        
+        .specialty-tag {
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+        }
+        
+        .portfolio-item {
+            transition: all 0.3s ease;
+        }
+        
+        .portfolio-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: #1a1a1a;
+            border: 2px solid #d4af37;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+        }
+        
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: #d4af37;
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body class="bg-charcoal text-warm-white font-body">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-display font-bold text-gradient">The Artisan's Chair</h1>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" class="text-warm-white hover:text-antique-gold px-3 py-2 text-sm font-medium transition-colors" data-i18n="navHome">Home</a>
+                        <a href="services.html" class="text-warm-white hover:text-antique-gold px-3 py-2 text-sm font-medium transition-colors" data-i18n="navServices">Services</a>
+                        <a href="contact.html" class="text-warm-white hover:text-antique-gold px-3 py-2 text-sm font-medium transition-colors" data-i18n="navContact">Contact</a>
+                        <a href="barbers.html" class="text-antique-gold hover:text-warm-white px-3 py-2 text-sm font-medium border-b-2 border-antique-gold" data-i18n="navBarbers">Barbers</a>
+                        <a href="gallery.html" class="text-warm-white hover:text-antique-gold px-3 py-2 text-sm font-medium transition-colors" data-i18n="navGallery">Gallery</a>
+                        
+                        <!-- Language Selector -->
+                        <div class="relative">
+                            <select id="language-selector" class="bg-transparent text-warm-white border border-antique-gold rounded px-3 py-1 text-sm">
+                                <option value="en" class="bg-charcoal">🇺🇸 English</option>
+                                <option value="es" class="bg-charcoal">🇪🇸 Español</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-warm-white hover:text-antique-gold">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-charcoal bg-opacity-95">
+                <a href="index.html" class="text-warm-white hover:text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navHome">Home</a>
+                <a href="services.html" class="text-warm-white hover:text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navServices">Services</a>
+                <a href="contact.html" class="text-warm-white hover:text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navContact">Contact</a>
+                <a href="barbers.html" class="text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navBarbers">Barbers</a>
+                <a href="gallery.html" class="text-warm-white hover:text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navGallery">Gallery</a>
+                
+                <!-- Mobile Language Selector -->
+                <div class="px-3 py-2">
+                    <select id="mobile-language-selector" class="bg-transparent text-warm-white border border-antique-gold rounded px-3 py-1 text-base w-full">
+                        <option value="en" class="bg-charcoal">🇺🇸 English</option>
+                        <option value="es" class="bg-charcoal">🇪🇸 Español</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="pt-24 pb-16 bg-steel-gray bg-opacity-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="reveal">
+                <h1 class="text-5xl md:text-6xl font-display font-bold mb-6">
+                    <span data-i18n="meetOur">Meet Our</span> <span class="text-gradient" data-i18n="masterBarbers">Master Barbers</span>
+                </h1>
+                <p class="text-xl text-warm-beige max-w-3xl mx-auto" data-i18n="barbersDescription">${.transition.en.barbersDescription}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Introduction -->
+    <section class="py-16 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl font-display font-bold mb-6" data-i18n="collectiveExcellence">A Collective of Excellence</h2>
+                <p class="text-lg text-warm-beige max-w-4xl mx-auto" data-i18n="teamIntro">
+                    Our team represents the pinnacle of barbering craftsmanship. With combined experience of over 50 years, we've mastered every technique from traditional straight razor shaves to contemporary styling trends. Each barber brings their own specialties and artistic vision, ensuring every client receives personalized, expert service.
+                </p>
+            </div>
+            
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12 reveal">
+                <button class="filter-btn active px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold" data-filter="all" data-i18n="allBarbers">
+                    All Barbers
+                </button>
+                <button class="filter-btn px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal" data-filter="master" data-i18n="masterBarbers">
+                    Master Barbers
+                </button>
+                <button class="filter-btn px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal" data-filter="contemporary" data-i18n="contemporaryStylists">
+                    Contemporary Stylists
+                </button>
+                <button class="filter-btn px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal" data-filter="traditional" data-i18n="traditionalSpecialists">
+                    Traditional Specialists
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Barbers Grid -->
+    <section class="pb-20 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="barbers-grid">
+                
+                <!-- Marcus Rodriguez -->
+                <div class="barber-card bg-warm-beige bg-opacity-10 rounded-lg p-6 text-center reveal" data-category="master" data-barber="marcus">
+                    <img src="resources/barber-1.jpg" alt="Marcus Rodriguez" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-antique-gold">
+                    <h3 class="text-xl font-display font-semibold mb-2" data-i18n="marcusName">Marcus Rodriguez</h3>
+                    <p class="text-antique-gold mb-3 font-medium" data-i18n="masterBarber">Master Barber</p>
+                    <div class="star-rating text-lg mb-4">★★★★★</div>
+                    <p class="text-warm-beige text-sm mb-4" data-i18n="marcusDesc">
+                        15+ years of experience specializing in traditional cuts and straight razor shaves. Award-winning stylist with a passion for classic gentlemen's grooming.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-2 mb-4">
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="traditionalCuts">Traditional Cuts</span>
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="straightRazor">Straight Razor</span>
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="hotTowelShaves">Hot Towel Shaves</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4 text-sm">
+                        <span class="text-warm-beige" data-i18n="experience15">Experience: 15+ years</span>
+                        <span class="text-antique-gold font-semibold">$45+</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="view-portfolio flex-1 bg-steel-gray hover:bg-antique-gold hover:text-charcoal px-4 py-2 rounded-lg text-sm font-semibold transition-all" data-barber="marcus" data-i18n="viewPortfolio">
+                            View Portfolio
+                        </button>
+                        <button class="book-barber btn-primary flex-1 text-charcoal px-4 py-2 rounded-lg text-sm font-semibold" data-barber="marcus" data-i18n="bookNow">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Alex Chen -->
+                <div class="barber-card bg-warm-beige bg-opacity-10 rounded-lg p-6 text-center reveal" data-category="contemporary" data-barber="alex">
+                    <img src="resources/barber-2.jpg" alt="Alex Chen" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-antique-gold">
+                    <h3 class="text-xl font-display font-semibold mb-2" data-i18n="alexName">Alex Chen</h3>
+                    <p class="text-antique-gold mb-3 font-medium" data-i18n="contemporaryStylist">Contemporary Stylist</p>
+                    <div class="star-rating text-lg mb-4">★★★★★</div>
+                    <p class="text-warm-beige text-sm mb-4" data-i18n="alexDesc">
+                        Expert in modern fades and creative styling. Known for precision work and contemporary trends that push the boundaries of men's grooming.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-2 mb-4">
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="skinFades">Skin Fades</span>
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="modernStyles">Modern Styles</span>
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="texturedCuts">Textured Cuts</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4 text-sm">
+                        <span class="text-warm-beige" data-i18n="experience8">Experience: 8+ years</span>
+                        <span class="text-antique-gold font-semibold">$40+</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="view-portfolio flex-1 bg-steel-gray hover:bg-antique-gold hover:text-charcoal px-4 py-2 rounded-lg text-sm font-semibold transition-all" data-barber="alex" data-i18n="viewPortfolio">
+                            View Portfolio
+                        </button>
+                        <button class="book-barber btn-primary flex-1 text-charcoal px-4 py-2 rounded-lg text-sm font-semibold" data-barber="alex" data-i18n="bookNow">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- James Thompson -->
+                <div class="barber-card bg-warm-beige bg-opacity-10 rounded-lg p-6 text-center reveal" data-category="traditional" data-barber="james">
+                    <img src="resources/barber-3.jpg" alt="James Thompson" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-antique-gold">
+                    <h3 class="text-xl font-display font-semibold mb-2" data-i18n="jamesName">James Thompson</h3>
+                    <p class="text-antique-gold mb-3 font-medium" data-i18n="traditionalSpecialist">Traditional Specialist</p>
+                    <div class="star-rating text-lg mb-4">★★★★★</div>
+                    <p class="text-warm-beige text-sm mb-4" data-i18n="jamesDesc">
+                        Master of classic techniques with 20+ years experience. Specializes in hot towel shaves and traditional gentlemen's haircuts.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-2 mb-4">
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="classicCuts">Classic Cuts</span>
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="hotTowelShaves">Hot Towel Shaves</span>
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="beardTrimming">Beard Trimming</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4 text-sm">
+                        <span class="text-warm-beige" data-i18n="experience20">Experience: 20+ years</span>
+                        <span class="text-antique-gold font-semibold">$42+</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="view-portfolio flex-1 bg-steel-gray hover:bg-antique-gold hover:text-charcoal px-4 py-2 rounded-lg text-sm font-semibold transition-all" data-barber="james" data-i18n="viewPortfolio">
+                            View Portfolio
+                        </button>
+                        <button class="book-barber btn-primary flex-1 text-charcoal px-4 py-2 rounded-lg text-sm font-semibold" data-barber="james" data-i18n="bookNow">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ryan Mitchell -->
+                <div class="barber-card bg-warm-beige bg-opacity-10 rounded-lg p-6 text-center reveal" data-category="contemporary" data-barber="ryan">
+                    <img src="resources/barber-4.jpg" alt="Ryan Mitchell" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-antique-gold">
+                    <h3 class="text-xl font-display font-semibold mb-2" data-i18n="ryanName">Ryan Mitchell</h3>
+                    <p class="text-antique-gold mb-3 font-medium" data-i18n="creativeDirector">Creative Director</p>
+                    <div class="star-rating text-lg mb-4">★★★★★</div>
+                    <p class="text-warm-beige text-sm mb-4" data-i18n="ryanDesc">
+                        Artistic approach to men's grooming with expertise in beard sculpting and innovative styling techniques. Instagram influencer with 50K+ followers.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-2 mb-4">
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="beardSculpting">Beard Sculpting</span>
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="creativeStyling">Creative Styling</span>
+                        <span class="specialty-tag px-3 py-1 rounded-full text-xs font-semibold" data-i18n="colorServices">Color Services</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-4 text-sm">
+                        <span class="text-warm-beige" data-i18n="experience6">Experience: 6+ years</span>
+                        <span class="text-antique-gold font-semibold">$38+</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="view-portfolio flex-1 bg-steel-gray hover:bg-antique-gold hover:text-charcoal px-4 py-2 rounded-lg text-sm font-semibold transition-all" data-barber="ryan" data-i18n="viewPortfolio">
+                            View Portfolio
+                        </button>
+                        <button class="book-barber btn-primary flex-1 text-charcoal px-4 py-2 rounded-lg text-sm font-semibold" data-barber="ryan" data-i18n="bookNow">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Philosophy -->
+    <section class="py-20 bg-steel-gray bg-opacity-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-display font-bold mb-6">
+                    <span data-i18n="our">Our</span> <span class="text-gradient" data-i18n="philosophy">Philosophy</span>
+                </h2>
+                <p class="text-xl text-warm-beige max-w-4xl mx-auto" data-i18n="philosophyDesc">
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center reveal">
+                    <div class="w-16 h-16 bg-antique-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-charcoal" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4" data-i18n="craftsmanship">Craftsmanship</h3>
+                    <p class="text-warm-beige" data-i18n="craftsmanshipDesc">
+                        Every cut, shave, and styling is executed with meticulous attention to detail and unwavering commitment to excellence.
+                    </p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-16 h-16 bg-antique-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-charcoal" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4" data-i18n="personalization">Personalization</h3>
+                    <p class="text-warm-beige" data-i18n="personalizationDesc">
+                        We understand that every client is unique, and we tailor our approach to match your individual style and preferences.
+                    </p>
+                </div>
+                
+                <div class="text-center reveal">
+                    <div class="w-16 h-16 bg-antique-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-charcoal" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4" data-i18n="passion">Passion</h3>
+                    <p class="text-warm-beige" data-i18n="passionDesc">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 bg-charcoal">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="reveal">
+                <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">
+                    <span data-i18n="readyFor">Ready for Your</span> <span class="text-gradient" data-i18n="transformation">Transformation?</span>
+                </h2>
+                <p class="text-xl text-warm-beige mb-12" data-i18n="transformationDesc">
+                    Choose your master craftsman and book your appointment today. Experience the difference that true expertise makes.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="booking.html" class="btn-primary text-charcoal font-semibold px-8 py-4 rounded-lg text-lg inline-block" data-i18n="bookAppointment">
+                        Book Appointment
+                    </a>
+                    <a href="services.html" class="border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal font-semibold px-8 py-4 rounded-lg text-lg transition-all" data-i18n="viewServices">
+                        View Services
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Modal -->
+    <div id="portfolio-modal" class="modal">
+        <div class="modal-content p-8 m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="modal-title" class="text-2xl font-display font-bold text-gradient"></h3>
+                <button id="close-modal" class="text-warm-white hover:text-antique-gold text-2xl">×</button>
+            </div>
+            <div id="modal-content">
+                <!-- Portfolio content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-steel-gray bg-opacity-40 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <h3 class="text-2xl font-display font-bold text-gradient mb-4">The Artisan's Chair</h3>
+                    <p class="text-warm-beige mb-4" data-i18n="footerDescription">
+                        Premium barbershop offering traditional craftsmanship and modern styling in a sophisticated atmosphere.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-antique-gold hover:text-deep-bronze">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-antique-gold hover:text-deep-bronze">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-antique-gold hover:text-deep-bronze">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.4<response clipped><NOTE>Lines longer than **2000 characters** will be **truncated**.</NOTE>
+                                6.4<response clipped><NOTE>Lines longer than **2000 characters** will be **truncated**.</NOTE>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4" data-i18n="quickLinks">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-warm-beige hover:text-antique-gold" data-i18n="navServices">Services</a></li>
+                        <li><a href="booking.html" class="text-warm-beige hover:text-antique-gold" data-i18n="bookAppointment">Book Appointment</a></li>
+                        <li><a href="barbers.html" class="text-warm-beige hover:text-antique-gold" data-i18n="navBarbers">Our Barbers</a></li>
+                        <li><a href="gallery.html" class="text-warm-beige hover:text-antique-gold" data-i18n="navGallery">Gallery</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4" data-i18n="contactInfo">Contact Info</h4>
+                    <ul class="space-y-2 text-warm-beige">
+                        <li data-i18n="address">📍 123 Premium Ave, Downtown</li>
+                        <li data-i18n="phone">📞 (555) 123-4567</li>
+                        <li data-i18n="email">✉️ info@artisanschair.com</li>
+                        <li data-i18n="hours">🕒 Mon-Sat: 9AM-7PM</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-steel-gray mt-8 pt-8 text-center">
+                <p class="text-warm-beige" data-i18n="footerCopyright">
+                    © 2024 The Artisan's Chair. All rights reserved. | Crafted with precision for the modern gentleman.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+</body>
+</html>
