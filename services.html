@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="servicesTitle">Services & Pricing - The Artisan's Chair</title>
+    <meta name="description" content="Explore our comprehensive range of premium grooming services. From classic cuts to luxury shaves, discover pricing for all our expert barber services.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <!-- Language Translations -->
+    <script src="translations.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'charcoal': '#1a1a1a',
+                        'warm-white': '#fafafa',
+                        'antique-gold': '#d4af37',
+                        'steel-gray': '#4a4a4a',
+                        'warm-beige': '#f5f1eb',
+                        'deep-bronze': '#8b6914'
+                    },
+                    fontFamily: {
+                        'display': ['Inter', 'serif'],
+                        'body': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        .text-gradient {
+            background: linear-gradient(135deg, #d4af37, #8b6914);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37, #8b6914);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(26, 26, 26, 0.9);
+        }
+        
+        .service-tab {
+            transition: all 0.3s ease;
+        }
+        
+        .service-tab.active {
+            background: linear-gradient(135deg, #d4af37, #8b6914);
+            color: #1a1a1a;
+        }
+        
+        .service-card {
+            background: rgba(245, 241, 235, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .price-highlight {
+            background: linear-gradient(135deg, #d4af37, #8b6914);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+        
+        .filter-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: #d4af37;
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body class="bg-charcoal text-warm-white font-body">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-display font-bold text-gradient">The Artisan's Chair</h1>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" class="text-warm-white hover:text-antique-gold px-3 py-2 text-sm font-medium transition-colors" data-i18n="navHome">Home</a>
+                        <a href="services.html" class="text-antique-gold hover:text-warm-white px-3 py-2 text-sm font-medium border-b-2 border-antique-gold" data-i18n="navServices">Services</a>
+                        <a href="contact.html" class="text-warm-white hover:text-antique-gold px-3 py-2 text-sm font-medium transition-colors" data-i18n="navContact">Contact</a>
+                        <a href="barbers.html" class="text-warm-white hover:text-antique-gold px-3 py-2 text-sm font-medium transition-colors" data-i18n="navBarbers">Barbers</a>
+                        <a href="gallery.html" class="text-warm-white hover:text-antique-gold px-3 py-2 text-sm font-medium transition-colors" data-i18n="navGallery">Gallery</a>
+                        
+                        <!-- Language Selector -->
+                        <div class="relative">
+                            <select id="language-selector" class="bg-transparent text-warm-white border border-antique-gold rounded px-3 py-1 text-sm">
+                                <option value="en" class="bg-charcoal">🇺🇸 English</option>
+                                <option value="es" class="bg-charcoal">🇪🇸 Español</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-warm-white hover:text-antique-gold">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-charcoal bg-opacity-95">
+                <a href="index.html" class="text-warm-white hover:text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navHome">Home</a>
+                <a href="services.html" class="text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navServices">Services</a>
+                <a href="booking.html" class="text-warm-white hover:text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navBooking">Booking</a>
+                <a href="barbers.html" class="text-warm-white hover:text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navBarbers">Barbers</a>
+                <a href="gallery.html" class="text-warm-white hover:text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navGallery">Gallery</a>
+                <a href="contact.html" class="text-warm-white hover:text-antique-gold block px-3 py-2 text-base font-medium" data-i18n="navContact">Contact</a>
+                
+                <!-- Mobile Language Selector -->
+                <div class="px-3 py-2">
+                    <select id="mobile-language-selector" class="bg-transparent text-warm-white border border-antique-gold rounded px-3 py-1 text-base w-full">
+                        <option value="en" class="bg-charcoal">🇺🇸 English</option>
+                        <option value="es" class="bg-charcoal">🇪🇸 Español</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="pt-24 pb-16 bg-steel-gray bg-opacity-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="reveal">
+                <h1 class="text-5xl md:text-6xl font-display font-bold mb-6">
+                    <span data-i18n="ourServices">Our</span> <span class="text-gradient" data-i18n="servicesSubtitle">Services</span>
+                </h1>
+                <p class="text-xl text-warm-beige max-w-3xl mx-auto" data-i18n="servicesDescription">
+                    Discover our comprehensive range of premium grooming services, each crafted to deliver exceptional results and an unforgettable experience.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Filters -->
+    <section class="py-8 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center gap-4 reveal">
+                <button class="filter-btn active px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold" data-filter="all" data-i18n="allServices">
+                    All Services
+                </button>
+                <button class="filter-btn px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal" data-filter="haircuts" data-i18n="haircuts">
+                    Haircuts
+                </button>
+                <button class="filter-btn px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal" data-filter="beard" data-i18n="beardWork">
+                    Beard Care
+                </button>
+                <button class="filter-btn px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal" data-filter="shaving" data-i18n="shaving">
+                    Shaving
+                </button>
+                <button class="filter-btn px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal" data-filter="packages" data-i18n="packages">
+                    Packages
+                </button>
+                <button class="filter-btn px-6 py-3 rounded-lg font-semibold border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal" data-filter="addons" data-i18n="addons">
+                    Add-ons
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section class="py-16 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Haircut Services -->
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="haircuts">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="classicMensCut">Classic Men's Cut</h3>
+                        <span class="price-highlight text-xl">$38</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="classicMensCutDesc">Traditional scissor cut with styling. Perfect for the professional gentleman seeking a timeless look.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes45">45 minutes</span></span>
+                        <span>👨‍💼 <span data-i18n="allHairTypes">All hair types</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Classic Men's Cut" data-price="38" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="haircuts">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="skinFade">Skin Fade</h3>
+                        <span class="price-highlight text-xl">$43</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="skinFadeDesc">Precision fade from skin to desired length. Clean, modern styling with expert blending techniques.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes50">50 minutes</span></span>
+                        <span>✂️ <span data-i18n="highPrecision">High precision</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Skin Fade" data-price="43" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="haircuts">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="longHairStyling">Long Hair Styling</h3>
+                        <span class="price-highlight text-xl">$43</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="longHairStylingDesc">Specialized cutting and styling for longer hair. Includes consultation, cut, and professional styling.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes60">60 minutes</span></span>
+                        <span>💇‍♂️ <span data-i18n="specialized">Specialized</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Long Hair Styling" data-price="43" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="haircuts">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="buzzCut">Buzz Cut</h3>
+                        <span class="price-highlight text-xl">$27</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="buzzCutDesc">Classic all-over clipper cut with natural taper. Quick, efficient service for the no-fuss gentleman.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes25">25 minutes</span></span>
+                        <span>⚡ <span data-i18n="quickService">Quick service</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Buzz Cut" data-price="27" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="haircuts">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="kidsHaircut">Kids Haircut (Under 7)</h3>
+                        <span class="price-highlight text-xl">$30</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="kidsHaircutDesc">Gentle, patient service for young gentlemen. Age-appropriate styles with extra care and attention.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes30">30 minutes</span></span>
+                        <span>👶 <span data-i18n="kidFriendly">Kid-friendly</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Kids Haircut" data-price="30" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="haircuts">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="seniorsHaircut">Senior's Haircut (65+)</h3>
+                        <span class="price-highlight text-xl">$30</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="seniorsHaircutDesc">Specialized service for distinguished gentlemen. Classic styling with the respect and attention you deserve.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes40">40 minutes</span></span>
+                        <span>👴 <span data-i18n="seniorCare">Senior care</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Senior's Haircut" data-price="30" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <!-- Beard Services -->
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="beard">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="beardTrim">Beard Trim</h3>
+                        <span class="price-highlight text-xl">$17</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="beardTrimDesc">Precision beard maintenance and shaping. Keep your facial hair looking sharp and well-groomed.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes20">20 minutes</span></span>
+                        <span>🧔 <span data-i18n="beardCare">Beard care</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Beard Trim" data-price="17" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="beard">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="beardTrimLineup">Beard Trim & Line-up</h3>
+                        <span class="price-highlight text-xl">$30</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="beardTrimLineupDesc">Complete beard service with straight razor line-up. Precision edging and premium product finish.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes30">30 minutes</span></span>
+                        <span>🔪 <span data-i18n="straightRazor">Straight razor</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Beard Trim & Line-up" data-price="30" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="beard">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="beardSculpting">Beard Sculpting</h3>
+                        <span class="price-highlight text-xl">$35</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="beardSculptingDesc">Artistic beard design and shaping. Transform your facial hair into a masterpiece of masculine style.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes40">40 minutes</span></span>
+                        <span>🎨 <span data-i18n="artisticDesign">Artistic design</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Beard Sculpting" data-price="35" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <!-- Shaving Services -->
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="shaving">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="luxuryHeadShave">Luxury Head Shave</h3>
+                        <span class="price-highlight text-xl">$45</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="luxuryHeadShaveDesc">The ultimate shaving experience. Hot towels, pre-shave oil, straight razor, and premium aftercare.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes45">45 minutes</span></span>
+                        <span>🔥 <span data-i18n="hotTowels">Hot towels</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Luxury Head Shave" data-price="45" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="shaving">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="luxuryWetShave">Luxury Wet Shave</h3>
+                        <span class="price-highlight text-xl">$45</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="luxuryWetShaveDesc">Traditional straight razor shave with hot towels, facial steamer, and exfoliating treatment.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes45">45 minutes</span></span>
+                        <span>💨 <span data-i18n="facialSteam">Facial steam</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Luxury Wet Shave" data-price="45" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <!-- Package Services -->
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="packages">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="gentlemansPackage">The Gentleman's Package</h3>
+                        <span class="price-highlight text-xl">$75</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="gentlemansPackageDesc">Haircut, beard trim, and hot towel shave. The complete grooming experience for the discerning gentleman.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes90">90 minutes</span></span>
+                        <span>💎 <span data-i18n="premiumPackage">Premium package</span></span>
+                        <span class="text-antique-gold font-semibold" data-i18n="save8">Save $8</span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Gentleman's Package" data-price="75" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="packages">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="executivePackage">The Executive Package</h3>
+                        <span class="price-highlight text-xl">$95</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="executivePackageDesc">Premium haircut, beard sculpting, luxury shave, and scalp treatment. For the man who demands excellence.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes120">120 minutes</span></span>
+                        <span>👔 <span data-i18n="executive">Executive</span></span>
+                        <span class="text-antique-gold font-semibold" data-i18n="save15">Save $15</span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Executive Package" data-price="95" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="packages">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="fatherSonPackage">Father & Son Package</h3>
+                        <span class="price-highlight text-xl">$60</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="fatherSonPackageDesc">Haircuts for both father and child. Create memories while looking your best together.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes60">60 minutes</span></span>
+                        <span>👨‍👦 <span data-i18n="family">Family</span></span>
+                        <span class="text-antique-gold font-semibold" data-i18n="save8">Save $8</span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Father & Son Package" data-price="60" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <!-- Add-on Services -->
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="addons">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="hairColor">Hair Color</h3>
+                        <span class="price-highlight text-xl">$80+</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="hairColorDesc">Professional hair coloring services. Cover gray or try a new look with expert color matching.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes60plus">60+ minutes</span></span>
+                        <span>🎨 <span data-i18n="customColor">Custom color</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Hair Color" data-price="80" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="addons">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="eyebrowWax">Eyebrow Wax</h3>
+                        <span class="price-highlight text-xl">$15</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="eyebrowWaxDesc">Professional eyebrow grooming and shaping. Enhance your facial features with perfectly sculpted brows.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes15">15 minutes</span></span>
+                        <span>✨ <span data-i18n="enhancement">Enhancement</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Eyebrow Wax" data-price="15" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+                <div class="service-card card-hover rounded-lg p-6 reveal" data-category="addons">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-display font-semibold" data-i18n="scalpTreatment">Scalp Treatment</h3>
+                        <span class="price-highlight text-xl">$25</span>
+                    </div>
+                    <p class="text-warm-beige mb-4" data-i18n="scalpTreatmentDesc">Revitalizing scalp massage with premium products. Promote healthy hair growth and relaxation.</p>
+                    <div class="flex justify-between items-center text-sm text-warm-beige mb-4">
+                        <span>⏱️ <span data-i18n="minutes20">20 minutes</span></span>
+                        <span>💆‍♂️ <span data-i18n="relaxation">Relaxation</span></span>
+                    </div>
+                    <button class="btn-primary text-charcoal px-4 py-2 rounded-lg font-semibold w-full book-service" data-service="Scalp Treatment" data-price="25" data-i18n="bookNow">
+                        Book Now
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 bg-steel-gray bg-opacity-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="reveal">
+                <h2 class="text-4xl md:text-5xl font-display font-bold mb-6">
+                    <span data-i18n="readyToExperience">Ready to Experience</span> <span class="text-gradient" data-i18n="excellence">Excellence?</span>
+                </h2>
+                <p class="text-xl text-warm-beige mb-12" data-i18n="servicesCTA">
+                    Book your appointment today and discover why we're the preferred choice for discerning gentlemen.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="booking.html" class="btn-primary text-charcoal font-semibold px-8 py-4 rounded-lg text-lg inline-block" data-i18n="bookAppointment">
+                        Book Appointment
+                    </a>
+                    <a href="tel:+1234567890" class="border-2 border-antique-gold text-antique-gold hover:bg-antique-gold hover:text-charcoal font-semibold px-8 py-4 rounded-lg text-lg transition-all inline-flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                        </svg>
+                        <span data-i18n="callNow">Call Now</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-steel-gray bg-opacity-40 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="md:col-span-2">
+                    <h3 class="text-2xl font-display font-bold text-gradient mb-4">The Artisan's Chair</h3>
+                    <p class="text-warm-beige mb-4" data-i18n="footerDescription">
+                        Premium barbershop offering traditional craftsmanship and modern styling in a sophisticated atmosphere.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-antique-gold hover:text-deep-bronze">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-antique-gold hover:text-deep-bronze">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-antique-gold hover:text-deep-bronze">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.4-10.162c0 .79-.319 1.51-.84 2.04-.52.53-1.24.85-2.04.85s-1.51-.32-2.04-.85c-.52-.53-.84-1.25-.84-2.04 0-.79.32-1.51.84-2.04.53-.53 1.25-.85 2.04-.85s1.52.32 2.04.85c.52.53.84 1.25.84 2.04z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4" data-i18n="quickLinks">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="services.html" class="text-warm-beige hover:text-antique-gold" data-i18n="navServices">Services</a></li>
+                        <li><a href="booking.html" class="text-warm-beige hover:text-antique-gold" data-i18n="bookAppointment">Book Appointment</a></li>
+                        <li><a href="barbers.html" class="text-warm-beige hover:text-antique-gold" data-i18n="navBarbers">Our Barbers</a></li>
+                        <li><a href="gallery.html" class="text-warm-beige hover:text-antique-gold" data-i18n="navGallery">Gallery</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4" data-i18n="contactInfo">Contact Info</h4>
+                    <ul class="space-y-2 text-warm-beige">
+                        <li data-i18n="address">📍 123 Premium Ave, Downtown</li>
+                        <li data-i18n="phone">📞 (555) 123-4567</li>
+                        <li data-i18n="email">✉️ info@artisanschair.com</li>
+                        <li data-i18n="hours">🕒 Mon-Sat: 9AM-7PM</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-steel-gray mt-8 pt-8 text-center">
+                <p class="text-warm-beige" data-i18n="footerCopyright">
+                    © 2024 The Artisan's Chair. All rights reserved. | Crafted with precision for the modern gentleman.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+</body>
+</html>
